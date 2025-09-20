@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head><title>Parent Portal</title></head>
+<body>
+<div layout:fragment="content">
+    <h1 th:text="|Welcome, ${parent.name}!|"></h1><p>Here is the summary for your child/children.</p>
+    <div th:each="entry : ${attendanceMap}" class="card mb-4"><div class="card-header"><h3 th:text="${entry.key.name}"></h3></div><div class="card-body"><h5>Attendance Summary</h5><table class="table table-sm table-hover"><thead><tr><th>Class</th><th>Date</th><th>Status</th></tr></thead><tbody><tr th:each="att : ${entry.value}"><td th:text="${att.schedule.subjectName}"></td><td th:text="${#temporals.format(att.attendanceDate, 'yyyy-MM-dd')}"></td><td><span th:if="${att.status.name() == 'PRESENT'}" class="badge badge-success">PRESENT</span><span th:if="${att.status.name() == 'ABSENT'}" class="badge badge-danger">ABSENT</span></td></tr><tr th:if="${#lists.isEmpty(entry.value)}"><td colspan="3" class="text-center">No attendance records found.</td></tr></tbody></table><h5 class="mt-4">Contact Tutors</h5><div th:if="${tutorMap.containsKey(entry.key) and not #lists.isEmpty(tutorMap.get(entry.key))}"><ul class="list-group"><li th:each="tutor : ${tutorMap.get(entry.key)}" class="list-group-item d-flex justify-content-between align-items-center"><span th:text="${tutor.name} + ' (' + tutor.subject + ')'"></span><a th:if="${tutor.user != null}" th:href="@{/chat/{recipientId}(recipientId=${tutor.user.id})}" class="btn btn-info btn-sm">Chat</a><span th:if="${tutor.user == null}" class="text-muted small">No login account</span></li></ul></div><div th:unless="${tutorMap.containsKey(entry.key) and not #lists.isEmpty(tutorMap.get(entry.key))}" class="text-muted">This student is not currently assigned to any tutors.</div></div></div>
+</div>
+</body>
+</html>

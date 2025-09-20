@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Upload Lesson</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="col-lg-6 col-md-8 mx-auto"><div class="card">
+        <div class="card-header"><h1>Upload New Lesson</h1></div>
+        <div class="card-body">
+            <form th:action="@{/lessons}" method="POST" enctype="multipart/form-data">
+                <div class="form-group"><label>Lesson Title</label><input type="text" name="title" class="form-control" placeholder="Enter Lesson Title" required /></div>
+                <div class="form-group"><label>Description</label><textarea name="description" class="form-control" placeholder="Enter Description"></textarea></div>
+                <div class="form-group"><label>Select Tutor</label><select name="tutorId" class="form-control" required><option value="">-- Select a Tutor --</option><option th:each="tutor : ${tutors}" th:value="${tutor.id}" th:text="${tutor.name}"></option></select></div>
+                <div class="form-group"><label>Lesson File</label><input type="file" name="file" class="form-control-file" required /></div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+    </div></div>
+</div>
+</body>
+</html>

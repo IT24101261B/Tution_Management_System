@@ -1,0 +1,36 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+}
+
+.navbar-dark.bg-dark {
+    background: linear-gradient(45deg, #4a154b, #302b63) !important;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+h1, h2, h3 {
+    color: #4a154b;
+    font-weight: 700;
+}
+
+.btn-primary {
+    background-color: #4a154b;
+    border-color: #4a154b;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: #302b63;
+    border-color: #302b63;
+}
+
+.table .table-dark {
+    background: linear-gradient(45deg, #4a154b, #302b63);
+    color: white;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}

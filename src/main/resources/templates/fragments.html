@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+
+<div th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}">Tuition MS</a>
+        <a class="navbar-brand" sec:authorize="hasRole('TUTOR')" th:href="@{/tutor/dashboard}">Tuition MS</a>
+        <a class="navbar-brand" sec:authorize="hasRole('STUDENT')" th:href="@{/student/dashboard}">Tuition MS</a>
+        <a class="navbar-brand" sec:authorize="hasRole('PARENT')" th:href="@{/portal}">Tuition MS</a>
+        <a class="navbar-brand" sec:authorize="!isAuthenticated()" th:href="@{/}">Tuition MS</a>
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/students}">Students</a></li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/tutors}">Tutors</a></li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/parents}">Parents</a></li>
+
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'TUTOR', 'STUDENT')"><a class="nav-link" th:href="@{/schedules}">Schedule</a></li>
+
+                <li class="nav-item" sec:authorize="hasRole('TUTOR')"><a class="nav-link" th:href="@{/tutor/dashboard}">Dashboard</a></li>
+                <li class="nav-item" sec:authorize="hasRole('TUTOR')"><a class="nav-link" th:href="@{/lessons}">Lessons</a></li>
+                <li class="nav-item" sec:authorize="hasRole('TUTOR')"><a class="nav-link" th:href="@{/attendance}">Attendance</a></li>
+
+                <li class="nav-item" sec:authorize="hasRole('STUDENT')"><a class="nav-link" th:href="@{/student/dashboard}">Dashboard</a></li>
+
+                <li class="nav-item" sec:authorize="hasRole('PARENT')"><a class="nav-link" th:href="@{/portal}">Parent Portal</a></li>
+
+                <li class="nav-item" sec:authorize="hasAnyRole('TUTOR', 'PARENT')"><a class="nav-link" th:href="@{/messages}">Messages</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+<div th:fragment="footer">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+</div>
+
+</body>
+</html>

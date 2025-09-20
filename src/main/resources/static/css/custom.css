@@ -1,0 +1,32 @@
+body, html {
+    background-color: #f4f7f6;
+}
+
+.hero-section {
+    background-color: #4a154b; /* A deep purple color */
+    color: white;
+    padding: 6rem 0;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+}
+
+.hero-section .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+.registration-section {
+    padding: 4rem 0;
+}

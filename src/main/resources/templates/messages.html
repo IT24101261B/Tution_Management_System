@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Messages</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Your Messages</h1>
+    <div class="list-group mt-3">
+        <a th:each="entry : ${conversations}" th:href="@{/chat/{recipientId}(recipientId=${entry.key.id})}" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1" th:text="${entry.key.email}"></h5>
+                <small th:text="${#temporals.format(entry.value.timestamp, 'MMM dd')}"></small>
+            </div>
+            <p class="mb-1" th:text="${entry.value.content}"></p>
+        </a>
+        <div th:if="${#maps.isEmpty(conversations)}" class="list-group-item">
+            <p class="mb-0 text-muted">You have no messages.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

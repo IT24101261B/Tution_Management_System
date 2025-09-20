@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Select Class for Attendance</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Select Class for Attendance</h1>
+    </div>
+
+    <div th:if="${param.success}" class="alert alert-success mt-3">Attendance saved successfully!</div>
+    <div th:if="${param.deleteSuccess}" class="alert alert-warning mt-3">Attendance has been reset.</div>
+
+    <table class="table table-striped table-bordered mt-3">
+        <thead class="table-dark">
+        <tr>
+            <th>Subject</th>
+            <th>Date & Time</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="schedule : ${schedules}">
+            <td th:text="${schedule.subjectName}"></td>
+            <td th:text="${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <a th:href="@{/attendance/mark/{id}(id=${schedule.id})}" class="btn btn-info btn-sm">Mark / Edit</a>
+                <a th:href="@{/attendance/delete/{id}(id=${schedule.id})}" class="btn btn-danger btn-sm">Reset</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

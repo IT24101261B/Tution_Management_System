@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Tuturn</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body, html { height: 100%; margin: 0; font-family: 'Poppins', sans-serif; overflow: hidden; }
+        .hero-section { position: relative; height: 100vh; background: linear-gradient(45deg, #4a154b, #302b63); color: white; display: flex; align-items: center; justify-content: center; }
+        .hero-container { position: relative; z-index: 2; padding: 2rem; }
+        .hero-content { max-width: 550px; }
+        .hero-content h1 { font-size: 4.5rem; font-weight: 900; line-height: 1.2; }
+        .hero-content h1 .highlight { color: #00bcd4; }
+        .hero-content .btn { font-size: 1.1rem; padding: 12px 28px; margin-top: 20px; margin-right: 15px; border-radius: 50px; font-weight: 700; transition: all 0.3s ease; }
+        .hero-content .btn-register { background-color: #ffc107; color: #212529; border: none; }
+        .hero-content .btn-login { background-color: transparent; color: white; border: 2px solid white; }
+        .hero-content .btn:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+    </style>
+</head>
+<body>
+<div class="hero-section">
+    <div class="container hero-container">
+        <div class="row"><div class="col-lg-8"><div class="hero-content">
+            <h1>A good <span class="highlight">#education</span> is always a foundation of a bright future.</h1>
+            <div><a th:href="@{/register}" class="btn btn-register">Register Here</a><a th:href="@{/login}" class="btn btn-login">Login</a></div>
+        </div></div></div>
+    </div>
+</div>
+</body>
+</html>

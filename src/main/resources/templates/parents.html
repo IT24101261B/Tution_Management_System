@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Manage Parents</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Manage Parents</h1>
+        <div><a th:href="@{/parents/new}" class="btn btn-primary">Create Parent Account</a></div>
+    </div>
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Username (Email)</th>
+            <th>Phone</th>
+            <th>Linked Children</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="parent : ${parents}">
+            <td th:text="${parent.name}"></td>
+            <td th:text="${parent.user.email}"></td>
+            <td th:text="${parent.phone}"></td>
+            <td>
+                <span th:each="student, iter : ${parent.students}" th:text="${student.name + (!iter.last ? ', ' : '')}"></span>
+            </td>
+            <td>
+                <a th:href="@{/parents/edit/{id}(id=${parent.id})}" class="btn btn-info btn-sm">Update</a>
+                <a th:href="@{/parents/delete/{id}(id=${parent.id})}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

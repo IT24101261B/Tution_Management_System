@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Mark Attendance</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <h2 th:text="|Marking Attendance for: ${schedule.subjectName}|"></h2>
+                <h5 class="text-muted" th:text="|Date: ${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}|"></h5>
+            </div>
+            <a th:href="@{/attendance}" class="btn btn-secondary">Back to Class List</a>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/attendance/save}" method="POST">
+                <input type="hidden" name="scheduleId" th:value="${schedule.id}" />
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="student : ${students}">
+                        <td th:text="${student.name}"></td>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" th:name="|status_${student.id}|" th:id="|present_${student.id}|" value="PRESENT"
+                                       th:checked="${existingRecords.containsKey(student.id) ? existingRecords.get(student.id) == T(com.tms.tuition_management.model.AttendanceStatus).PRESENT : true}">
+                                <label class="form-check-label" th:for="|present_${student.id}|">Present</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" th:name="|status_${student.id}|" th:id="|absent_${student.id}|" value="ABSENT"
+                                       th:checked="${existingRecords.containsKey(student.id) and existingRecords.get(student.id) == T(com.tms.tuition_management.model.AttendanceStatus).ABSENT}">
+                                <label class="form-check-label" th:for="|absent_${student.id}|">Absent</label>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">Save Attendance</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

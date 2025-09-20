@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Edit Parent</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="col-lg-6 col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header"><h1>Edit Parent Account</h1></div>
+            <div class="card-body">
+                <form th:action="@{/parents/{id}(id=${parent.id})}" th:object="${parent}" method="POST">
+                    <div class="form-group"><label>Parent Name</label><input type="text" th:field="*{name}" class="form-control" required/></div>
+                    <div class="form-group"><label>Parent Email</label><input type="email" th:field="*{email}" class="form-control" required/></div>
+                    <div class="form-group"><label>Parent Phone</label><input type="text" th:field="*{phone}" class="form-control"/></div>
+                    <div class="form-group"><label>Link to Student(s) (Hold Ctrl/Cmd)</label><select name="studentIds" class="form-control" multiple="multiple" required size="5"><option th:each="student : ${students}" th:value="${student.id}" th:text="${student.name}" th:selected="${parent.students.contains(student)}"></option></select></div>
+                    <button type="submit" class="btn btn-success">Update Parent</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

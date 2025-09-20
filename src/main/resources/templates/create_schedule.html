@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Create Schedule</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-header"><h1>Create New Class Schedule</h1></div>
+            <div class="card-body">
+                <form th:action="@{/schedules}" th:object="${schedule}" method="POST">
+                    <div class="form-group"><label>Subject Name</label><input type="text" th:field="*{subjectName}" class="form-control" required/></div>
+                    <div class="form-group"><label>Date and Time</label><input type="datetime-local" th:field="*{dateTime}" class="form-control" required/></div>
+                    <div class="form-group"><label>Location / Link</label><input type="text" th:field="*{location}" class="form-control"/></div>
+                    <div class="form-group"><label>Assign Tutor</label><select name="tutorId" class="form-control" required><option value="">-- Select a Tutor --</option><option th:each="tutor : ${tutors}" th:value="${tutor.id}" th:text="${tutor.name}"></option></select></div>
+                    <div class="form-group"><label>Enroll Students (Hold Ctrl/Cmd)</label><select name="studentIds" class="form-control" multiple="multiple" required size="5"><option th:each="student : ${students}" th:value="${student.id}" th:text="${student.name}"></option></select></div>
+                    <button type="submit" class="btn btn-primary">Save Schedule</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
