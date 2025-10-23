@@ -10,7 +10,6 @@ A comprehensive, web-based platform designed to support the core operations of s
 
 | Name                      | Student ID Number |
 | ------------------------- | ----------------- |
-| [Your Name] (Group Leader)| [Your ID]         |
 | Sherangi S.A.G.A          | IT24100958        |
 | Perera W.A.M.V            | IT24101454        |
 | Samarasinghe S.R.G.N.B    | IT24101261        |
