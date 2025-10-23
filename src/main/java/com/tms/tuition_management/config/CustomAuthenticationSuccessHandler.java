@@ -1,8 +1,9 @@
 package com.tms.tuition_management.config;
 
+import com.tms.tuition_management.model.Parent; // Ensure Parent is imported
 import com.tms.tuition_management.model.User;
-import com.tms.tuition_management.repository.ParentRepository;
-import com.tms.tuition_management.service.UserService;
+import com.tms.tuition_management.repository.ParentRepository; // Import ParentRepository
+import com.tms.tuition_management.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,40 +13,53 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Optional; // Import Optional
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final UserService userService;
-    private final ParentRepository parentRepository;
+    private final UserRepository userRepository;
+    private final ParentRepository parentRepository; // Inject ParentRepository
 
-    public CustomAuthenticationSuccessHandler(UserService userService, ParentRepository parentRepository) {
-        this.userService = userService;
+    // Update constructor to include ParentRepository
+    public CustomAuthenticationSuccessHandler(UserRepository userRepository, ParentRepository parentRepository) {
+        this.userRepository = userRepository;
         this.parentRepository = parentRepository;
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String redirectUrl = "/";
-        User loggedInUser = userService.findByEmail(authentication.getName());
+        String redirectUrl = determineTargetUrl(authentication);
+        response.sendRedirect(redirectUrl);
+    }
+
+    protected String determineTargetUrl(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return "/login?error"; // Should not happen if authentication succeeded
+        }
 
         for (GrantedAuthority authority : authentication.getAuthorities()) {
-            String role = authority.getAuthority();
-            if (role.equals("ROLE_ADMIN")) {
-                redirectUrl = "/admin/dashboard";
-                break;
-            } else if (role.equals("ROLE_TUTOR")) {
-                redirectUrl = "/tutor/dashboard";
-                break;
-            } else if (role.equals("ROLE_PARENT")) {
-                Long parentId = parentRepository.findByUserId(loggedInUser.getId()).getId();
-                redirectUrl = "/portal/parent/" + parentId;
-                break;
-            } else if (role.equals("ROLE_STUDENT")) {
-                redirectUrl = "/student/dashboard";
-                break;
+            switch (authority.getAuthority()) {
+                case "ROLE_ADMIN":
+                    return "/admin/dashboard";
+                case "ROLE_TUTOR":
+                    return "/tutor/dashboard";
+                case "ROLE_STUDENT":
+                    return "/student/dashboard";
+                case "ROLE_PARENT":
+                    // FIX: Correctly handle the Optional<Parent>
+                    Optional<Parent> parentOptional = parentRepository.findByUserId(user.getId());
+                    if (parentOptional.isPresent()) {
+                        // Parent parent = parentOptional.get(); // No need to get parent object here
+                        return "/portal"; // Redirect directly to the general parent portal URL
+                    } else {
+                        // Handle case where Parent profile might be missing
+                        return "/login?error=parent_profile_missing";
+                    }
             }
         }
-        response.sendRedirect(redirectUrl);
+        return "/login?error"; // Fallback
     }
 }

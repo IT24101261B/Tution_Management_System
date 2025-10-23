@@ -2,11 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
-<head><title>Parent Portal</title></head>
+<head>
+    <title>Parent Portal</title>
+</head>
 <body>
 <div layout:fragment="content">
-    <h1 th:text="|Welcome, ${parent.name}!|"></h1><p>Here is the summary for your child/children.</p>
-    <div th:each="entry : ${attendanceMap}" class="card mb-4"><div class="card-header"><h3 th:text="${entry.key.name}"></h3></div><div class="card-body"><h5>Attendance Summary</h5><table class="table table-sm table-hover"><thead><tr><th>Class</th><th>Date</th><th>Status</th></tr></thead><tbody><tr th:each="att : ${entry.value}"><td th:text="${att.schedule.subjectName}"></td><td th:text="${#temporals.format(att.attendanceDate, 'yyyy-MM-dd')}"></td><td><span th:if="${att.status.name() == 'PRESENT'}" class="badge badge-success">PRESENT</span><span th:if="${att.status.name() == 'ABSENT'}" class="badge badge-danger">ABSENT</span></td></tr><tr th:if="${#lists.isEmpty(entry.value)}"><td colspan="3" class="text-center">No attendance records found.</td></tr></tbody></table><h5 class="mt-4">Contact Tutors</h5><div th:if="${tutorMap.containsKey(entry.key) and not #lists.isEmpty(tutorMap.get(entry.key))}"><ul class="list-group"><li th:each="tutor : ${tutorMap.get(entry.key)}" class="list-group-item d-flex justify-content-between align-items-center"><span th:text="${tutor.name} + ' (' + tutor.subject + ')'"></span><a th:if="${tutor.user != null}" th:href="@{/chat/{recipientId}(recipientId=${tutor.user.id})}" class="btn btn-info btn-sm">Chat</a><span th:if="${tutor.user == null}" class="text-muted small">No login account</span></li></ul></div><div th:unless="${tutorMap.containsKey(entry.key) and not #lists.isEmpty(tutorMap.get(entry.key))}" class="text-muted">This student is not currently assigned to any tutors.</div></div></div>
+    <h1 class="mb-4"><i class="fas fa-user-shield me-2"></i>Parent Portal</h1>
+    <h2 th:text="|Welcome, ${parent.name}!|"></h2>
+
+    <div th:if="${#lists.isEmpty(parent.students)}">
+        <p class="mt-4">You are not currently linked to any students. Please contact the administrator.</p>
+    </div>
+
+    <div th:each="student : ${parent.students}" class="card mt-4 mb-4">
+        <div class="card-header">
+            <h3 class="mb-0"><i class="fas fa-user-graduate me-2"></i>Student: <span th:text="${student.name}"></span></h3>
+        </div>
+        <div class="card-body">
+            <h4><i class="fas fa-calendar-check me-2"></i>Attendance Records</h4>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover mt-3">
+                    <thead class="table-light">
+                    <tr>
+                        <th><i class="fas fa-calendar-day me-1"></i>Date</th>
+                        <th><i class="fas fa-book me-1"></i>Subject</th>
+                        <th><i class="fas fa-question-circle me-1"></i>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="att : ${attendanceMap.get(student.id)}">
+                        <td th:text="${#temporals.format(att.attendanceDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${att.schedule.subjectName}"></td>
+                        <td th:text="${att.status}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(attendanceMap.get(student.id))}">
+                        <td colspan="3" class="text-center">No attendance records found for this student.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-4"><i class="fas fa-chalkboard-teacher me-2"></i>Tutors</h4>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover mt-3">
+                    <thead class="table-light">
+                    <tr>
+                        <th><i class="fas fa-user-tie me-1"></i>Tutor Name</th>
+                        <th><i class="fas fa-book-reader me-1"></i>Subject</th>
+                        <th><i class="fas fa-comments me-1"></i>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${tutorMap.get(student.id)}">
+                        <td th:text="${entry.key.name}"></td>
+                        <td th:text="${entry.value}"></td> <!-- Subject Name -->
+                        <td>
+                            <a th:href="@{/chat/{recipientId}(recipientId=${entry.key.user.id})}" class="btn btn-secondary btn-sm"><i class="fas fa-paper-plane me-1"></i>Send Message</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#maps.isEmpty(tutorMap.get(student.id))}">
+                        <td colspan="3" class="text-center">No tutors found for this student's classes.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

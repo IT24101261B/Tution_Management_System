@@ -9,13 +9,43 @@
 <div layout:fragment="content">
     <div class="col-lg-6 col-md-8 mx-auto">
         <div class="card">
-            <div class="card-header"><h1>Create New Student</h1></div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h1>Create New Student</h1>
+                <a th:href="@{/students}" class="btn btn-secondary">Back to List</a>
+            </div>
             <div class="card-body">
                 <form th:action="@{/students}" th:object="${student}" method="POST">
-                    <div class="form-group"><label>Student Name</label><input type="text" th:field="*{name}" class="form-control" /></div>
-                    <div class="form-group"><label>Student Email (for login)</label><input type="email" th:field="*{email}" class="form-control" required/></div>
-                    <div class="form-group"><label>Student Phone</label><input type="text" th:field="*{phone}" class="form-control" /></div>
-                    <div class="form-group"><label>Password</label><input type="password" name="password" class="form-control" required/></div>
+
+                    <div class="form-group mb-3">
+                        <label for="name">Student Name</label>
+                        <input type="text" th:field="*{name}" class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" id="name" required/>
+                        <!-- Inline error message for name -->
+                        <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="email">Student Email (for login)</label>
+                        <input type="email" th:field="*{email}" class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" id="email" required/>
+                        <!-- Inline error message for email -->
+                        <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="phone">Student Phone (10 digits)</label>
+                        <input type="text" th:field="*{phone}" class="form-control" th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''" id="phone" required/>
+                        <!-- Inline error message for phone -->
+                        <span class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Phone Error</span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="password">Password (min 8 characters)</label>
+                        <input type="password" name="password" class="form-control" required id="password"/>
+                        <!-- Note: Password error from User object not directly available here -->
+                        <!-- If controller adds a generic password error, it could be shown -->
+                        <!-- <span class="text-danger" th:if="${passwordError}" th:text="${passwordError}"></span> -->
+                    </div>
+
+                    <!-- Button consistently placed -->
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>

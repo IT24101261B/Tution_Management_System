@@ -1,14 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 <head>
     <title>Manage Lessons</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center"><h1>Manage Lessons</h1><div><a th:href="@{/lessons/new}" class="btn btn-primary">Upload New Lesson</a></div></div>
-    <table class="table table-striped table-bordered mt-3"><thead class="table-dark"><tr><th>Title</th><th>Description</th><th>File Name</th><th>Date Uploaded</th></tr></thead><tbody><tr th:each="lesson : ${lessons}"><td th:text="${lesson.title}"></td><td th:text="${lesson.description}"></td><td th:text="${lesson.fileName}"></td><td th:text="${#temporals.format(lesson.dateUploaded, 'yyyy-MM-dd HH:mm')}"></td></tr></tbody></table>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Manage Lesson Materials</h1>
+        <!-- Only Tutors can upload -->
+        <a th:href="@{/lessons/new}" class="btn btn-primary" sec:authorize="hasRole('TUTOR')">Upload New Lesson</a>
+    </div>
+
+    <div th:if="${param.success}" class="alert alert-success">Lesson uploaded successfully!</div>
+    <div th:if="${param.updateSuccess}" class="alert alert-info">Lesson updated successfully!</div>
+    <div th:if="${param.deleteSuccess}" class="alert alert-warning">Lesson deleted successfully!</div>
+
+    <table class="table table-striped table-bordered mt-3">
+        <thead class="table-dark">
+        <tr>
+            <th>Lesson Title</th>
+            <th>Description</th>
+            <th>File Name</th>
+            <th>Uploaded By</th>
+            <th>Date Uploaded</th>
+            <!-- Show Actions only for Tutors -->
+            <th sec:authorize="hasRole('TUTOR')">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="lesson : ${lessons}">
+            <td th:text="${lesson.title}"></td>
+            <td th:text="${lesson.description}"></td>
+            <td>
+                <!-- Make filename a download link for everyone -->
+                <a th:href="@{/lessons/download/{fileName}(fileName=${lesson.fileName})}" th:text="${lesson.fileName}"></a>
+            </td>
+            <td th:text="${lesson.tutor?.name}"></td> <!-- Safe navigation -->
+            <td th:text="${#temporals.format(lesson.uploadDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <!-- Show Actions only for Tutors -->
+            <td sec:authorize="hasRole('TUTOR')">
+                <a th:href="@{/lessons/edit/{id}(id=${lesson.id})}" class="btn btn-info btn-sm">Update</a>
+                <!-- Added onclick confirmation -->
+                <a th:href="@{/lessons/delete/{id}(id=${lesson.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this lesson?');">Delete</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(lessons)}">
+            <td colspan="6" class="text-center">No lessons uploaded yet.</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

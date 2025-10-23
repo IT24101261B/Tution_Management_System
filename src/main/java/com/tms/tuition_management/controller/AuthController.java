@@ -1,9 +1,14 @@
 package com.tms.tuition_management.controller;
 
+import com.tms.tuition_management.dto.UserDto;
 import com.tms.tuition_management.model.User;
 import com.tms.tuition_management.service.UserService;
+import jakarta.validation.Valid; // Add this import
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult; // Add this import
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -17,30 +22,47 @@ public class AuthController {
     }
 
     @GetMapping("/")
-    public String homePage() {
+    public String home() {
         return "index";
     }
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginForm() {
         return "login";
     }
 
     @GetMapping("/register")
-    public String registerPage() {
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("userDto", new UserDto());
         return "register";
     }
 
     @PostMapping("/register/save")
-    public String registration(@RequestParam String name, @RequestParam String email, @RequestParam String password, @RequestParam String role,
-                               @RequestParam(required = false) String subject,
-                               @RequestParam(required = false) String phone,
-                               @RequestParam(required = false) String childEmail) {
-        User existingUser = userService.findByEmail(email);
-        if (existingUser != null) {
-            return "redirect:/register?registerFail";
+    public String registration(@Valid @ModelAttribute("userDto") UserDto userDto,
+                               BindingResult bindingResult, // Add BindingResult
+                               Model model) {
+        // Check for existing user first, add error if found
+        User existing = userService.findByEmail(userDto.getEmail());
+        if (existing != null) {
+            bindingResult.rejectValue("email", null, "An account with this email already exists.");
         }
-        userService.registerNewUser(name, email, password, role, subject, phone, childEmail);
-        return "redirect:/login?registerSuccess";
+
+        // Check if any validation errors occurred (from annotations or custom check)
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("userDto", userDto); // Send the object back to keep form data
+            return "register"; // Return to the form if errors exist
+        }
+
+        // Proceed with registration if no errors
+        userService.registerNewUser(
+                userDto.getName(),
+                userDto.getEmail(),
+                userDto.getPassword(),
+                userDto.getRole(),
+                userDto.getSubject(),
+                userDto.getPhone(),
+                userDto.getChildEmail()
+        );
+        return "redirect:/register?success";
     }
 }

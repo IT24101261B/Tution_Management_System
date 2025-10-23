@@ -2,11 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
-<head><title>Tutor Dashboard</title></head>
+<head>
+    <title>Tutor Dashboard</title>
+</head>
 <body>
+
 <div layout:fragment="content">
-    <h1 th:text="|Welcome, ${tutor.name}!|"></h1><p>Here are the classes assigned to you.</p>
-    <table class="table table-striped table-bordered mt-3"><thead class="table-dark"><tr><th>Subject</th><th>Date & Time</th><th>Location / Link</th><th>Enrolled Students</th></tr></thead><tbody><tr th:each="schedule : ${schedules}"><td th:text="${schedule.subjectName}"></td><td th:text="${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}"></td><td th:text="${schedule.location}"></td><td th:text="${schedule.students.size()}"></td></tr><tr th:if="${#lists.isEmpty(schedules)}"><td colspan="4" class="text-center">You have not been assigned to any classes yet.</td></tr></tbody></table>
+    <h1 class="mb-4" th:text="|Welcome, ${tutor.name}!|"><i class="fas fa-chalkboard-teacher me-2"></i>Welcome, Tutor!</h1>
+    <p>Here are the classes assigned to you.</p>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover mt-3">
+            <thead class="table-dark">
+            <tr>
+                <th><i class="fas fa-book me-1"></i>Subject</th>
+                <th><i class="fas fa-clock me-1"></i>Date & Time</th>
+                <th><i class="fas fa-map-marker-alt me-1"></i>Location / Link</th>
+                <th><i class="fas fa-users me-1"></i>Enrolled</th>
+                <th><i class="fas fa-cogs me-1"></i>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="schedule : ${schedules}">
+                <td th:text="${schedule.subjectName}"></td>
+                <td th:text="${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${schedule.location}"></td>
+                <td th:text="${schedule.students.size()}"></td>
+                <td>
+                    <a th:href="@{/attendance/mark/{id}(id=${schedule.id})}" class="btn btn-info btn-sm"><i class="fas fa-user-check me-1"></i>Mark / Edit Attendance</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(schedules)}">
+                <td colspan="5" class="text-center">You have not been assigned to any classes yet.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 </body>
 </html>

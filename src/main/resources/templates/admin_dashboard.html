@@ -8,86 +8,78 @@
 <body>
 
 <div layout:fragment="content">
-    <h1 class="mb-4">Admin Dashboard</h1>
+    <h1 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h1>
 
-    <div class="row">
+    <!-- Statistic Cards -->
+    <div class="row mb-4">
         <div class="col-md-4">
             <div class="card bg-primary mb-3">
-                <div class="card-header">Total Students</div>
+                <div class="card-header"><i class="fas fa-user-graduate me-2"></i>Total Students</div>
                 <div class="card-body text-white">
-                    <h2 class="card-title" th:text="${studentCount}">0</h2>
+                    <h2 class="card-title display-4" th:text="${studentCount}">0</h2>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card bg-success mb-3">
-                <div class="card-header">Total Tutors</div>
+                <div class="card-header"><i class="fas fa-chalkboard-teacher me-2"></i>Total Tutors</div>
                 <div class="card-body text-white">
-                    <h2 class="card-title" th:text="${tutorCount}">0</h2>
+                    <h2 class="card-title display-4" th:text="${tutorCount}">0</h2>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card bg-info mb-3">
-                <div class="card-header">Total Parents</div>
+                <div class="card-header"><i class="fas fa-user-friends me-2"></i>Total Parents</div>
                 <div class="card-body text-white">
-                    <h2 class="card-title" th:text="${parentCount}">0</h2>
+                    <h2 class="card-title display-4" th:text="${parentCount}">0</h2>
                 </div>
             </div>
         </div>
     </div>
 
-    <hr>
+    <h2 class="mt-4"><i class="fas fa-calendar-alt me-2"></i>Upcoming Classes</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover mt-3">
+            <thead class="table-dark">
+            <tr><th><i class="fas fa-book me-1"></i>Subject</th><th><i class="fas fa-clock me-1"></i>Date & Time</th><th><i class="fas fa-chalkboard-teacher me-1"></i>Tutor</th><th><i class="fas fa-users me-1"></i>Enrolled</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="schedule : ${schedules}">
+                <td th:text="${schedule.subjectName}"></td>
+                <td th:text="${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${schedule.tutor != null ? schedule.tutor.name : 'N/A'}"></td>
+                <td th:text="${schedule.students.size()}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(schedules)}">
+                <td colspan="4" class="text-center">No classes scheduled yet.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <h2 class="mt-4">Upcoming Classes</h2>
-    <table class="table table-striped table-bordered mt-3">
-        <thead class="table-dark">
-        <tr>
-            <th>Subject</th>
-            <th>Date & Time</th>
-            <th>Tutor</th>
-            <th>Enrolled</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="schedule : ${schedules}">
-            <td th:text="${schedule.subjectName}"></td>
-            <td th:text="${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
-            <td th:text="${schedule.tutor != null ? schedule.tutor.name : 'N/A'}"></td>
-            <td th:text="${schedule.students.size()}"></td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(schedules)}">
-            <td colspan="4" class="text-center">No classes scheduled yet.</td>
-        </tr>
-        </tbody>
-    </table>
-
-    <hr>
-
-    <h2 class="mt-4">Pending Approvals</h2>
-    <table class="table table-bordered mt-3">
-        <thead class="table-dark">
-        <tr>
-            <th>Email</th>
-            <th>Requested Role</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${pendingUsers}">
-            <td th:text="${user.email}"></td>
-            <td th:text="${#strings.replace(user.roles.iterator().next().name, 'ROLE_', '')}"></td>
-            <td>
-                <form th:action="@{/admin/approve/{id}(id=${user.id})}" method="post">
-                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                </form>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(pendingUsers)}">
-            <td colspan="3" class="text-center">No pending approvals.</td>
-        </tr>
-        </tbody>
-    </table>
+    <h2 class="mt-4"><i class="fas fa-user-check me-2"></i>Pending Approvals</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover mt-3">
+            <thead class="table-dark">
+            <tr><th><i class="fas fa-envelope me-1"></i>Email</th><th><i class="fas fa-user-tag me-1"></i>Requested Role</th><th><i class="fas fa-cogs me-1"></i>Action</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${pendingUsers}">
+                <td th:text="${user.email}"></td>
+                <td th:text="${#strings.replace(user.roles.iterator().next().name, 'ROLE_', '')}"></td>
+                <td>
+                    <form th:action="@{/admin/approve/{id}(id=${user.id})}" method="post">
+                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check me-1"></i>Approve</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(pendingUsers)}">
+                <td colspan="3" class="text-center">No pending approvals.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 </body>

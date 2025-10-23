@@ -7,13 +7,36 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center"><h1>Manage Tutors</h1><div><a th:href="@{/tutors/new}" class="btn btn-primary">Add New Tutor</a></div></div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Manage Tutors</h1>
+        <a th:href="@{/tutors/new}" class="btn btn-primary">Add New Tutor</a>
+    </div>
+
+    <div th:if="${param.success}" class="alert alert-success">Tutor created successfully!</div>
+    <div th:if="${param.updateSuccess}" class="alert alert-info">Tutor updated successfully!</div>
+    <div th:if="${param.deleteSuccess}" class="alert alert-warning">Tutor deleted successfully!</div>
+
     <table class="table table-striped table-bordered mt-3">
         <thead class="table-dark">
-        <tr><th>Name</th><th>Username (Email)</th><th>Subject</th><th>Actions</th></tr>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-        <tr th:each="tutor : ${tutors}"><td th:text="${tutor.name}"></td><td th:text="${tutor.user.email}"></td><td th:text="${tutor.subject}"></td><td><a th:href="@{/tutors/edit/{id}(id=${tutor.id})}" class="btn btn-info btn-sm">Update</a><a th:href="@{/tutors/delete/{id}(id=${tutor.id})}" class="btn btn-danger btn-sm">Delete</a></td></tr>
+        <tr th:each="tutor : ${tutors}">
+            <td th:text="${tutor.name}"></td>
+            <td th:text="${tutor.user?.email}"></td> <!-- Use safe navigation -->
+            <td th:text="${tutor.subject}"></td>
+            <td>
+                <a th:href="@{/tutors/edit/{id}(id=${tutor.id})}" class="btn btn-info btn-sm">Update</a>
+                <!-- Added onclick confirmation -->
+                <a th:href="@{/tutors/delete/{id}(id=${tutor.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this tutor?');">Delete</a>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

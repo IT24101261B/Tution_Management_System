@@ -1,9 +1,11 @@
 package com.tms.tuition_management.repository;
+
 import com.tms.tuition_management.model.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional; // Import Optional
 
-@Repository
 public interface ParentRepository extends JpaRepository<Parent, Long> {
-    Parent findByUserId(Long userId);
+
+    // Ensure this method exists and returns Optional<Parent>
+    Optional<Parent> findByUserId(Long userId);
 }

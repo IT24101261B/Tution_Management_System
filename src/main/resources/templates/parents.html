@@ -7,15 +7,20 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Manage Parents</h1>
-        <div><a th:href="@{/parents/new}" class="btn btn-primary">Create Parent Account</a></div>
+        <a th:href="@{/parents/new}" class="btn btn-primary">Add New Parent</a>
     </div>
-    <table class="table table-bordered table-striped mt-3">
+
+    <div th:if="${param.success}" class="alert alert-success">Parent created successfully!</div>
+    <div th:if="${param.updateSuccess}" class="alert alert-info">Parent updated successfully!</div>
+    <div th:if="${param.deleteSuccess}" class="alert alert-warning">Parent deleted successfully!</div>
+
+    <table class="table table-striped table-bordered mt-3">
         <thead class="table-dark">
         <tr>
             <th>Name</th>
-            <th>Username (Email)</th>
+            <th>Email</th>
             <th>Phone</th>
             <th>Linked Children</th>
             <th>Actions</th>
@@ -24,14 +29,18 @@
         <tbody>
         <tr th:each="parent : ${parents}">
             <td th:text="${parent.name}"></td>
-            <td th:text="${parent.user.email}"></td>
+            <td th:text="${parent.user?.email}"></td> <!-- Use safe navigation -->
             <td th:text="${parent.phone}"></td>
             <td>
-                <span th:each="student, iter : ${parent.students}" th:text="${student.name + (!iter.last ? ', ' : '')}"></span>
+                <ul>
+                    <li th:each="student : ${parent.students}" th:text="${student.name}"></li>
+                </ul>
             </td>
             <td>
                 <a th:href="@{/parents/edit/{id}(id=${parent.id})}" class="btn btn-info btn-sm">Update</a>
-                <a th:href="@{/parents/delete/{id}(id=${parent.id})}" class="btn btn-danger btn-sm">Delete</a>
+                <!-- Added onclick confirmation -->
+                <a th:href="@{/parents/delete/{id}(id=${parent.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this parent?');">Delete</a>
             </td>
         </tr>
         </tbody>

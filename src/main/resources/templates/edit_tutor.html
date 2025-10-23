@@ -9,12 +9,35 @@
 <div layout:fragment="content">
     <div class="col-lg-6 col-md-8 mx-auto">
         <div class="card">
-            <div class="card-header"><h1>Edit Tutor</h1></div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h1>Edit Tutor</h1>
+                <a th:href="@{/tutors}" class="btn btn-secondary">Back to List</a>
+            </div>
             <div class="card-body">
                 <form th:action="@{/tutors/{id}(id=${tutor.id})}" th:object="${tutor}" method="POST">
-                    <div class="form-group"><label>Tutor Name</label><input type="text" th:field="*{name}" class="form-control" /></div>
-                    <div class="form-group"><label>Tutor Email</label><input type="email" th:field="*{email}" class="form-control" /></div>
-                    <div class="form-group"><label>Subject</label><input type="text" th:field="*{subject}" class="form-control" /></div>
+
+                    <div class="form-group mb-3">
+                        <label for="name">Tutor Name</label>
+                        <input type="text" th:field="*{name}" class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" id="name" required/>
+                        <!-- Inline error message for name -->
+                        <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="email">Tutor Email (for login)</label>
+                        <input type="email" th:field="*{email}" class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" id="email" required/>
+                        <!-- Inline error message for email -->
+                        <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="subject">Subject</label>
+                        <input type="text" th:field="*{subject}" class="form-control" th:classappend="${#fields.hasErrors('subject')} ? 'is-invalid' : ''" id="subject" required/>
+                        <!-- Inline error message for subject -->
+                        <span class="text-danger" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}">Subject Error</span>
+                    </div>
+
+                    <!-- Button consistently placed -->
                     <button type="submit" class="btn btn-primary">Update Tutor</button>
                 </form>
             </div>

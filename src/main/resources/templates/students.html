@@ -7,16 +7,44 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center">
-        <h1>Manage Students</h1>
-        <div><a th:href="@{/students/new}" class="btn btn-primary">Add New Student</a></div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Student Profile Management</h1>
+        <a th:href="@{/students/new}" class="btn btn-primary">Add New Student</a>
     </div>
+
+    <!-- Success/Info Messages for CRUD operations -->
+    <div th:if="${param.success}" class="alert alert-success">Student created successfully!</div>
+    <div th:if="${param.updateSuccess}" class="alert alert-info">Student updated successfully!</div>
+    <div th:if="${param.deleteSuccess}" class="alert alert-warning">Student deleted successfully!</div>
+
     <table class="table table-striped table-bordered mt-3">
         <thead class="table-dark">
-        <tr><th>Name</th><th>Username (Email)</th><th>Phone</th><th>Actions</th></tr>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-        <tr th:each="student : ${students}"><td th:text="${student.name}"></td><td th:text="${student.user.email}"></td><td th:text="${student.phone}"></td><td><a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-info btn-sm">Update</a><a th:href="@{/students/delete/{id}(id=${student.id})}" class="btn btn-danger btn-sm">Delete</a></td></tr>
+        <!-- Loop through each student in the list -->
+        <tr th:each="student : ${students}">
+            <td th:text="${student.name}"></td>
+            <!-- Use safe navigation operator (?.) in case user is null -->
+            <td th:text="${student.user?.email}"></td>
+            <td th:text="${student.phone}"></td>
+            <td>
+                <!-- Link to the edit page for this student -->
+                <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-info btn-sm">Update</a>
+                <!-- Link to delete this student, with confirmation -->
+                <a th:href="@{/students/delete/{id}(id=${student.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+            </td>
+        </tr>
+        <!-- Display if no students exist -->
+        <tr th:if="${#lists.isEmpty(students)}">
+            <td colspan="4" class="text-center">No students found.</td>
+        </tr>
         </tbody>
     </table>
 </div>

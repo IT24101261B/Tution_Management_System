@@ -31,10 +31,7 @@ public class SecurityConfig {
                                 .requestMatchers("/", "/register", "/register/save", "/login", "/css/**").permitAll()
                                 .requestMatchers("/admin/**", "/students/**", "/tutors/**", "/parents/**").hasRole("ADMIN")
                                 .requestMatchers("/schedules/edit/**", "/schedules/update/**", "/schedules/delete/**").hasAnyRole("ADMIN", "TUTOR")
-
-                                // This rule allows any authenticated user to download lessons
                                 .requestMatchers("/lessons/download/**").authenticated()
-                                // But keeps the rest of lesson and attendance management for Tutors and Admins
                                 .requestMatchers("/lessons/**", "/tutor/**", "/attendance/**").hasAnyRole("ADMIN", "TUTOR")
 
                                 .requestMatchers("/portal/**", "/messages/**", "/chat/**").hasAnyRole("PARENT", "TUTOR")

@@ -40,7 +40,6 @@ public class ChatController {
         return "chat";
     }
 
-    // This method handles the form submission for sending a new message.
     @PostMapping("/chat/send")
     public String sendMessage(@RequestParam Long recipientId, @RequestParam String content, Authentication authentication) {
         User sender = userService.findByEmail(authentication.getName());

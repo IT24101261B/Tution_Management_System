@@ -1,16 +1,22 @@
 package com.tms.tuition_management.controller;
 
-import com.tms.tuition_management.model.*;
-import com.tms.tuition_management.repository.ParentRepository;
-import com.tms.tuition_management.service.*;
+import com.tms.tuition_management.model.Attendance;
+import com.tms.tuition_management.model.Parent;
+import com.tms.tuition_management.model.Schedule;
+import com.tms.tuition_management.model.Student;
+import com.tms.tuition_management.model.Tutor;
+import com.tms.tuition_management.service.AttendanceService;
+import com.tms.tuition_management.service.ParentService;
+import com.tms.tuition_management.service.ScheduleService;
+import com.tms.tuition_management.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -20,39 +26,43 @@ public class PortalController {
     private final AttendanceService attendanceService;
     private final ScheduleService scheduleService;
     private final UserService userService;
-    private final ParentRepository parentRepository;
 
-    public PortalController(ParentService parentService, AttendanceService attendanceService, ScheduleService scheduleService, UserService userService, ParentRepository parentRepository) {
+    public PortalController(ParentService parentService, AttendanceService attendanceService, ScheduleService scheduleService, UserService userService) {
         this.parentService = parentService;
         this.attendanceService = attendanceService;
         this.scheduleService = scheduleService;
         this.userService = userService;
-        this.parentRepository = parentRepository;
     }
 
     @GetMapping("/portal")
-    public String parentPortalRedirect(Authentication authentication) {
-        User user = userService.findByEmail(authentication.getName());
-        Parent parent = parentRepository.findByUserId(user.getId());
-        return "redirect:/portal/parent/" + parent.getId();
-    }
+    public String parentPortal(Model model, Authentication authentication) {
+        String email = authentication.getName();
+        Long userId = userService.findByEmail(email).getId();
+        // FIX: Use getParentById if you are passing the parent's ID,
+        // or findByUserId if you are passing the user's ID.
+        // Assuming you need to find the parent linked to the logged-in user:
+        Parent parent = parentService.findByUserId(userId);
 
-    @GetMapping("/portal/parent/{parentId}")
-    public String showParentPortal(@PathVariable Long parentId, Model model) {
-        Parent parent = parentService.findById(parentId);
+        if (parent == null) {
+            // Handle case where parent profile not found for the user
+            return "redirect:/login?error=parent_profile_not_found";
+        }
+
         model.addAttribute("parent", parent);
-        model.addAttribute("attendanceMap", parent.getStudents().stream()
-                .collect(Collectors.toMap(
-                        student -> student,
-                        student -> attendanceService.findByStudentId(student.getId())
-                )));
 
-        Map<Student, Set<Tutor>> tutorMap = parent.getStudents().stream()
-                .collect(Collectors.toMap(
-                        student -> student,
-                        student -> scheduleService.findSchedulesByStudentId(student.getId()).stream()
-                                .map(Schedule::getTutor).collect(Collectors.toSet())
-                ));
+        Map<Long, List<Attendance>> attendanceMap = new HashMap<>();
+        Map<Long, Map<Tutor, String>> tutorMap = new HashMap<>(); // Map<StudentId, Map<Tutor, SubjectName>>
+
+        for (Student student : parent.getStudents()) {
+            attendanceMap.put(student.getId(), attendanceService.findByStudentId(student.getId()));
+
+            Map<Tutor, String> studentTutors = scheduleService.findSchedulesByStudentId(student.getId()).stream()
+                    .filter(schedule -> schedule.getTutor() != null)
+                    .collect(Collectors.toMap(Schedule::getTutor, Schedule::getSubjectName, (existing, replacement) -> existing)); // Avoid duplicate tutors if they teach multiple subjects
+            tutorMap.put(student.getId(), studentTutors);
+        }
+
+        model.addAttribute("attendanceMap", attendanceMap);
         model.addAttribute("tutorMap", tutorMap);
 
         return "parent_portal";

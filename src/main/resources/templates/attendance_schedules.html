@@ -8,7 +8,7 @@
 <body>
 
 <div layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Select Class for Attendance</h1>
     </div>
 
@@ -20,7 +20,7 @@
         <tr>
             <th>Subject</th>
             <th>Date & Time</th>
-            <th>Actions</th>
+            <th>Manage Attendance</th>
         </tr>
         </thead>
         <tbody>
@@ -29,8 +29,13 @@
             <td th:text="${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td>
                 <a th:href="@{/attendance/mark/{id}(id=${schedule.id})}" class="btn btn-info btn-sm">Mark / Edit</a>
-                <a th:href="@{/attendance/delete/{id}(id=${schedule.id})}" class="btn btn-danger btn-sm">Reset</a>
+                <!-- Added onclick confirmation for Reset -->
+                <a th:href="@{/attendance/delete/{id}(id=${schedule.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to reset all attendance for this class session?');">Reset</a>
             </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(schedules)}">
+            <td colspan="3" class="text-center">No classes available for attendance marking.</td>
         </tr>
         </tbody>
     </table>

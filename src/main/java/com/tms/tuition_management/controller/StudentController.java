@@ -5,8 +5,10 @@ import com.tms.tuition_management.model.User;
 import com.tms.tuition_management.repository.UserRepository;
 import com.tms.tuition_management.service.StudentService;
 import com.tms.tuition_management.service.UserService;
+import jakarta.validation.Valid; // Add this import
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult; // Add this import
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -14,7 +16,7 @@ public class StudentController {
 
     private final StudentService studentService;
     private final UserRepository userRepository;
-    private final UserService userService; // FIX: Declare the field
+    private final UserService userService;
 
     public StudentController(StudentService studentService, UserRepository userRepository, UserService userService) {
         this.studentService = studentService;
@@ -35,10 +37,23 @@ public class StudentController {
     }
 
     @PostMapping("/students")
-    public String saveStudent(@ModelAttribute("student") Student student, @RequestParam String password) {
-        // This line will now work correctly
+    public String saveStudent(@Valid @ModelAttribute("student") Student student, // Add @Valid
+                              BindingResult bindingResult, // Add BindingResult
+                              @RequestParam String password, Model model) {
+        // Check if email already exists before other validation
+        if (student.getEmail() != null && userService.findByEmail(student.getEmail()) != null) {
+            bindingResult.rejectValue("email", "email.exists", "An account with this email already exists.");
+        }
+
+        // Check for validation errors from annotations OR custom checks
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("student", student); // Send back the object to keep form data
+            return "create_student"; // Return to the form
+        }
+
+        // Proceed with creating the student if no errors
         userService.createAdminStudent(student, password);
-        return "redirect:/students";
+        return "redirect:/students?success";
     }
 
     @GetMapping("/students/edit/{id}")
@@ -48,24 +63,46 @@ public class StudentController {
     }
 
     @PostMapping("/students/{id}")
-    public String updateStudent(@PathVariable Long id, @ModelAttribute("student") Student studentDetails) {
-        Student existingStudent = studentService.getStudentById(id);
-        existingStudent.setName(studentDetails.getName());
-        existingStudent.setPhone(studentDetails.getPhone());
+    public String updateStudent(@PathVariable Long id,
+                                @Valid @ModelAttribute("student") Student studentDetails, // Add @Valid
+                                BindingResult bindingResult, // Add BindingResult
+                                Model model) {
 
-        User user = existingStudent.getUser();
-        if (user != null) {
-            user.setEmail(studentDetails.getEmail());
-            userRepository.save(user);
+        Student existingStudent = studentService.getStudentById(id);
+
+        // Check if email is being changed and if the new email already exists for *another* user
+        if (existingStudent.getUser() != null && studentDetails.getEmail() != null &&
+                !existingStudent.getUser().getEmail().equals(studentDetails.getEmail())) {
+            User userWithNewEmail = userService.findByEmail(studentDetails.getEmail());
+            if (userWithNewEmail != null && !userWithNewEmail.getId().equals(existingStudent.getUser().getId())) {
+                bindingResult.rejectValue("email", "email.exists", "An account with this email already exists.");
+            }
         }
 
-        studentService.saveStudent(existingStudent);
-        return "redirect:/students";
+        // Check for validation errors from annotations OR custom checks
+        if (bindingResult.hasErrors()) {
+            studentDetails.setId(id); // Keep the ID for the form action URL
+            if (studentDetails.getUser() == null) studentDetails.setUser(existingStudent.getUser()); // Repopulate User if needed
+            model.addAttribute("student", studentDetails); // Send back the object with errors
+            return "edit_student"; // Return to the edit form
+        }
+
+        // Update logic if no errors
+        existingStudent.setName(studentDetails.getName());
+        existingStudent.setPhone(studentDetails.getPhone());
+        if (existingStudent.getUser() != null && studentDetails.getEmail() != null) {
+            existingStudent.getUser().setEmail(studentDetails.getEmail());
+            userRepository.save(existingStudent.getUser()); // Save the updated User
+        }
+        studentService.saveStudent(existingStudent); // Save the updated Student
+
+        return "redirect:/students?updateSuccess";
     }
 
     @GetMapping("/students/delete/{id}")
     public String deleteStudent(@PathVariable Long id) {
         studentService.deleteStudentById(id);
-        return "redirect:/students";
+        return "redirect:/students?deleteSuccess";
     }
 }
+

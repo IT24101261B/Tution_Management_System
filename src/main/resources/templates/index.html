@@ -2,29 +2,80 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to Tuturn</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Tuition Management System</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
     <style>
-        body, html { height: 100%; margin: 0; font-family: 'Poppins', sans-serif; overflow: hidden; }
-        .hero-section { position: relative; height: 100vh; background: linear-gradient(45deg, #4a154b, #302b63); color: white; display: flex; align-items: center; justify-content: center; }
-        .hero-container { position: relative; z-index: 2; padding: 2rem; }
-        .hero-content { max-width: 550px; }
-        .hero-content h1 { font-size: 4.5rem; font-weight: 900; line-height: 1.2; }
-        .hero-content h1 .highlight { color: #00bcd4; }
-        .hero-content .btn { font-size: 1.1rem; padding: 12px 28px; margin-top: 20px; margin-right: 15px; border-radius: 50px; font-weight: 700; transition: all 0.3s ease; }
-        .hero-content .btn-register { background-color: #ffc107; color: #212529; border: none; }
-        .hero-content .btn-login { background-color: transparent; color: white; border: 2px solid white; }
-        .hero-content .btn:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+        /* Specific styles for the homepage hero content */
+        .hero-content {
+            max-width: 700px;
+            text-align: center;
+            color: white; /* Ensure text is white against the image */
+            animation: fadeInContent 1.5s ease-in-out forwards; /* Added forwards */
+            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark box */
+            padding: 2rem 3rem; /* Add padding inside the content box */
+            border-radius: 10px; /* Round the corners */
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.5); /* Enhance text shadow for readability */
+            color: white; /* Ensure H1 is white */
+        }
+        .hero-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9); /* Slightly off-white for paragraph */
+        }
+        .hero-content .btn {
+            font-size: 1.1rem;
+            padding: 12px 30px;
+            margin: 0 10px;
+            border-radius: 50px; /* Pill shape */
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .hero-content .btn-light {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #5a67d8;
+            border: none;
+        }
+        .hero-content .btn-light:hover {
+            background-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        .hero-content .btn-outline-light {
+            border-width: 2px;
+        }
+        .hero-content .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeInContent { /* Renamed animation */
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-<div class="hero-section">
-    <div class="container hero-container">
-        <div class="row"><div class="col-lg-8"><div class="hero-content">
-            <h1>A good <span class="highlight">#education</span> is always a foundation of a bright future.</h1>
-            <div><a th:href="@{/register}" class="btn btn-register">Register Here</a><a th:href="@{/login}" class="btn btn-login">Login</a></div>
-        </div></div></div>
+<!-- Apply the shared background class here -->
+<div class="hero-section-bg">
+    <div class="hero-content">
+        <h1>Welcome to the Tuition Management System</h1>
+        <!-- Updated Description -->
+        <p>
+            Manage schedules, resources, and communication effortlessly. Your complete tuition center solution.
+        </p>
+        <div>
+            <a th:href="@{/login}" class="btn btn-light">Login</a>
+            <a th:href="@{/register}" class="btn btn-outline-light">Register Here</a>
+        </div>
     </div>
 </div>
 </body>

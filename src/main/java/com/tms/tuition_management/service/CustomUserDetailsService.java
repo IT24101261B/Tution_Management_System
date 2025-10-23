@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+// This class is an implementation of the Strategy Design Pattern.
+// It provides a specific "strategy" for Spring Security to find a user
+// in our application's database, fulfilling the UserDetailsService interface.
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
