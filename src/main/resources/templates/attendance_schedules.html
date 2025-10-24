@@ -29,7 +29,7 @@
             <td th:text="${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td>
                 <a th:href="@{/attendance/mark/{id}(id=${schedule.id})}" class="btn btn-info btn-sm">Mark / Edit</a>
-                <!-- Added onclick confirmation for Reset -->
+               
                 <a th:href="@{/attendance/delete/{id}(id=${schedule.id})}" class="btn btn-danger btn-sm"
                    onclick="return confirm('Are you sure you want to reset all attendance for this class session?');">Reset</a>
             </td>
