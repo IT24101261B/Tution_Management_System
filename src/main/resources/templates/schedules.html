@@ -9,7 +9,7 @@
 <div layout:fragment="content">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Class Schedule</h1>
-        <!-- Only Admins can create new schedules -->
+        
         <a th:href="@{/schedules/new}" class="btn btn-primary" sec:authorize="hasRole('ADMIN')">Create New Class</a>
     </div>
 
@@ -25,7 +25,7 @@
             <th>Tutor</th>
             <th>Location / Link</th>
             <th>Enrolled</th>
-            <!-- Show Actions only for Admin/Tutor -->
+            
             <th sec:authorize="hasAnyRole('ADMIN', 'TUTOR')">Actions</th>
         </tr>
         </thead>
@@ -33,13 +33,13 @@
         <tr th:each="schedule : ${schedules}">
             <td th:text="${schedule.subjectName}"></td>
             <td th:text="${#temporals.format(schedule.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
-            <td th:text="${schedule.tutor?.name}"></td> <!-- Use safe navigation -->
+            <td th:text="${schedule.tutor?.name}"></td> 
             <td th:text="${schedule.location}"></td>
             <td th:text="${schedule.students.size()}"></td>
-            <!-- Show Actions only for Admin/Tutor -->
+            
             <td sec:authorize="hasAnyRole('ADMIN', 'TUTOR')">
                 <a th:href="@{/schedules/edit/{id}(id=${schedule.id})}" class="btn btn-info btn-sm">Update</a>
-                <!-- Added onclick confirmation -->
+                
                 <a th:href="@{/schedules/delete/{id}(id=${schedule.id})}" class="btn btn-danger btn-sm"
                    onclick="return confirm('Are you sure you want to delete this schedule?');">Delete</a>
             </td>
