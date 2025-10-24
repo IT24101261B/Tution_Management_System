@@ -5,10 +5,10 @@ import com.tms.tuition_management.model.User;
 import com.tms.tuition_management.repository.UserRepository;
 import com.tms.tuition_management.service.StudentService;
 import com.tms.tuition_management.service.UserService;
-import jakarta.validation.Valid; // Add this import
+import jakarta.validation.Valid; 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult; // Add this import
+import org.springframework.validation.BindingResult; 
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -37,21 +37,21 @@ public class StudentController {
     }
 
     @PostMapping("/students")
-    public String saveStudent(@Valid @ModelAttribute("student") Student student, // Add @Valid
-                              BindingResult bindingResult, // Add BindingResult
+    public String saveStudent(@Valid @ModelAttribute("student") Student student, 
+                              BindingResult bindingResult,
                               @RequestParam String password, Model model) {
-        // Check if email already exists before other validation
+       
         if (student.getEmail() != null && userService.findByEmail(student.getEmail()) != null) {
             bindingResult.rejectValue("email", "email.exists", "An account with this email already exists.");
         }
 
-        // Check for validation errors from annotations OR custom checks
+       
         if (bindingResult.hasErrors()) {
-            model.addAttribute("student", student); // Send back the object to keep form data
-            return "create_student"; // Return to the form
+            model.addAttribute("student", student); 
+            return "create_student"; 
         }
 
-        // Proceed with creating the student if no errors
+        
         userService.createAdminStudent(student, password);
         return "redirect:/students?success";
     }
@@ -64,13 +64,13 @@ public class StudentController {
 
     @PostMapping("/students/{id}")
     public String updateStudent(@PathVariable Long id,
-                                @Valid @ModelAttribute("student") Student studentDetails, // Add @Valid
-                                BindingResult bindingResult, // Add BindingResult
+                                @Valid @ModelAttribute("student") Student studentDetails, 
+                                BindingResult bindingResult,
                                 Model model) {
 
         Student existingStudent = studentService.getStudentById(id);
 
-        // Check if email is being changed and if the new email already exists for *another* user
+       
         if (existingStudent.getUser() != null && studentDetails.getEmail() != null &&
                 !existingStudent.getUser().getEmail().equals(studentDetails.getEmail())) {
             User userWithNewEmail = userService.findByEmail(studentDetails.getEmail());
@@ -79,22 +79,22 @@ public class StudentController {
             }
         }
 
-        // Check for validation errors from annotations OR custom checks
+        
         if (bindingResult.hasErrors()) {
-            studentDetails.setId(id); // Keep the ID for the form action URL
-            if (studentDetails.getUser() == null) studentDetails.setUser(existingStudent.getUser()); // Repopulate User if needed
-            model.addAttribute("student", studentDetails); // Send back the object with errors
-            return "edit_student"; // Return to the edit form
+            studentDetails.setId(id); 
+            if (studentDetails.getUser() == null) studentDetails.setUser(existingStudent.getUser());
+            model.addAttribute("student", studentDetails); 
+            return "edit_student"; 
         }
 
-        // Update logic if no errors
+       
         existingStudent.setName(studentDetails.getName());
         existingStudent.setPhone(studentDetails.getPhone());
         if (existingStudent.getUser() != null && studentDetails.getEmail() != null) {
             existingStudent.getUser().setEmail(studentDetails.getEmail());
-            userRepository.save(existingStudent.getUser()); // Save the updated User
+            userRepository.save(existingStudent.getUser()); 
         }
-        studentService.saveStudent(existingStudent); // Save the updated Student
+        studentService.saveStudent(existingStudent); 
 
         return "redirect:/students?updateSuccess";
     }
