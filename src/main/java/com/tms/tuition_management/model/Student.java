@@ -26,17 +26,16 @@ public class Student {
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits.")
     private String phone;
 
-    @OneToOne(cascade = CascadeType.ALL) // Cascade operations to the associated User
+    @OneToOne(cascade = CascadeType.ALL) 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user; // Contains the email field, validation is handled in User class
-
+    private User user; 
     @ManyToMany(mappedBy = "students")
     private Set<Schedule> schedules = new HashSet<>();
 
     @ManyToMany(mappedBy = "students")
     private Set<Parent> parents = new HashSet<>();
 
-    // --- Standard Getters and Setters ---
+    
     public Long getId() {
         return id;
     }
@@ -85,8 +84,8 @@ public class Student {
         this.parents = parents;
     }
 
-    // Helper method to get email for forms
-    @Transient // Not persisted in DB
+    
+    @Transient 
     public String getEmail() {
         return (this.user != null) ? this.user.getEmail() : null;
     }
