@@ -9,12 +9,12 @@ public interface StudentService {
 
     Student getStudentById(Long id);
 
-    void saveStudent(Student student); // Used for both create & update
+    void saveStudent(Student student); 
 
     void deleteStudentById(Long id);
 
     Student findByUserId(Long userId);
 
-    // --- Add this missing method ---
+    
     long countStudents();
 }
