@@ -1,8 +1,8 @@
 package com.tms.tuition_management.config;
 
-import com.tms.tuition_management.model.Parent; // Ensure Parent is imported
+import com.tms.tuition_management.model.Parent; 
 import com.tms.tuition_management.model.User;
-import com.tms.tuition_management.repository.ParentRepository; // Import ParentRepository
+import com.tms.tuition_management.repository.ParentRepository; 
 import com.tms.tuition_management.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,15 +13,15 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Optional; // Import Optional
+import java.util.Optional; 
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
-    private final ParentRepository parentRepository; // Inject ParentRepository
+    private final ParentRepository parentRepository; 
 
-    // Update constructor to include ParentRepository
+    
     public CustomAuthenticationSuccessHandler(UserRepository userRepository, ParentRepository parentRepository) {
         this.userRepository = userRepository;
         this.parentRepository = parentRepository;
@@ -37,7 +37,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
-            return "/login?error"; // Should not happen if authentication succeeded
+            return "/login?error"; 
         }
 
         for (GrantedAuthority authority : authentication.getAuthorities()) {
@@ -49,13 +49,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 case "ROLE_STUDENT":
                     return "/student/dashboard";
                 case "ROLE_PARENT":
-                    // FIX: Correctly handle the Optional<Parent>
+                    
                     Optional<Parent> parentOptional = parentRepository.findByUserId(user.getId());
                     if (parentOptional.isPresent()) {
-                        // Parent parent = parentOptional.get(); // No need to get parent object here
-                        return "/portal"; // Redirect directly to the general parent portal URL
+                        
+                        return "/portal"; 
                     } else {
-                        // Handle case where Parent profile might be missing
+                        
                         return "/login?error=parent_profile_missing";
                     }
             }
