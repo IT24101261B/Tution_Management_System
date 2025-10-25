@@ -1,15 +1,15 @@
 package com.tms.tuition_management.controller;
 
 import com.tms.tuition_management.model.Parent;
-import com.tms.tuition_management.model.User; // Ensure User is imported
+import com.tms.tuition_management.model.User; 
 import com.tms.tuition_management.repository.UserRepository;
 import com.tms.tuition_management.service.ParentService;
 import com.tms.tuition_management.service.StudentService;
 import com.tms.tuition_management.service.UserService;
-import jakarta.validation.Valid; // Add this import
+import jakarta.validation.Valid; 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult; // Add this import
+import org.springframework.validation.BindingResult; 
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,8 +43,8 @@ public class ParentController {
     }
 
     @PostMapping("/parents")
-    public String saveParent(@Valid @ModelAttribute("parent") Parent parent, // Add @Valid
-                             BindingResult bindingResult, // Add BindingResult
+    public String saveParent(@Valid @ModelAttribute("parent") Parent parent, 
+                             BindingResult bindingResult, 
                              @RequestParam String password,
                              @RequestParam(required = false) List<Long> studentIds, Model model) {
         if (parent.getEmail() != null && userService.findByEmail(parent.getEmail()) != null) {
@@ -69,13 +69,12 @@ public class ParentController {
 
     @PostMapping("/parents/{id}")
     public String updateParent(@PathVariable Long id,
-                               @Valid @ModelAttribute("parent") Parent parentDetails, // Add @Valid
-                               BindingResult bindingResult, // Add BindingResult
+                               @Valid @ModelAttribute("parent") Parent parentDetails, 
+                               BindingResult bindingResult, 
                                @RequestParam(required = false) List<Long> studentIds, Model model) {
 
         Parent existingParent = parentService.getParentById(id);
 
-        // Check if email is being changed and if the new email already exists for another user
         if (existingParent.getUser() != null && parentDetails.getEmail() != null &&
                 !existingParent.getUser().getEmail().equals(parentDetails.getEmail())) {
             User userWithNewEmail = userService.findByEmail(parentDetails.getEmail());
@@ -85,14 +84,14 @@ public class ParentController {
         }
 
         if (bindingResult.hasErrors()) {
-            parentDetails.setId(id); // Keep the ID
-            if(parentDetails.getUser() == null) parentDetails.setUser(existingParent.getUser()); // Repopulate User if needed
+            parentDetails.setId(id); 
+            if(parentDetails.getUser() == null) parentDetails.setUser(existingParent.getUser()); 
             model.addAttribute("parent", parentDetails);
             model.addAttribute("allStudents", studentService.getAllStudents());
             return "edit_parent";
         }
 
-        // Update logic
+        
         existingParent.setName(parentDetails.getName());
         existingParent.setPhone(parentDetails.getPhone());
         if (existingParent.getUser() != null && parentDetails.getEmail() != null) {
