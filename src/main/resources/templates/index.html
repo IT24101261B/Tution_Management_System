@@ -8,34 +8,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/theme.css}">
     <style>
-        /* Specific styles for the homepage hero content */
+        
         .hero-content {
             max-width: 700px;
             text-align: center;
-            color: white; /* Ensure text is white against the image */
-            animation: fadeInContent 1.5s ease-in-out forwards; /* Added forwards */
-            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark box */
-            padding: 2rem 3rem; /* Add padding inside the content box */
-            border-radius: 10px; /* Round the corners */
+            color: white; 
+            animation: fadeInContent 1.5s ease-in-out forwards; 
+            background-color: rgba(0, 0, 0, 0.6); 
+            padding: 2rem 3rem; 
+            border-radius: 10px; 
         }
         .hero-content h1 {
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.5); /* Enhance text shadow for readability */
-            color: white; /* Ensure H1 is white */
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.5); 
+            color: white; 
         }
         .hero-content p {
             font-size: 1.25rem;
             margin-bottom: 2rem;
             line-height: 1.6;
-            color: rgba(255, 255, 255, 0.9); /* Slightly off-white for paragraph */
+            color: rgba(255, 255, 255, 0.9); 
         }
         .hero-content .btn {
             font-size: 1.1rem;
             padding: 12px 30px;
             margin: 0 10px;
-            border-radius: 50px; /* Pill shape */
+            border-radius: 50px; 
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
@@ -57,18 +57,18 @@
             transform: translateY(-3px);
         }
 
-        @keyframes fadeInContent { /* Renamed animation */
+        @keyframes fadeInContent { 
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-<!-- Apply the shared background class here -->
+
 <div class="hero-section-bg">
     <div class="hero-content">
         <h1>Welcome to the Tuition Management System</h1>
-        <!-- Updated Description -->
+        
         <p>
             Manage schedules, resources, and communication effortlessly. Your complete tuition center solution.
         </p>
