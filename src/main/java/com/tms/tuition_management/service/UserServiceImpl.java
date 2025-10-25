@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional; // Ensure Optional is imported
+import java.util.Optional; 
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,14 +69,13 @@ public class UserServiceImpl implements UserService {
                 parent.setPhone(phone);
                 parent.setUser(user);
                 if (childEmail != null && !childEmail.isEmpty()) {
-                    // FIX: Correctly handle the Optional<Student>
+                    
                     Optional<Student> childOptional = studentRepository.findByUser_Email(childEmail);
                     if (childOptional.isPresent()) {
-                        Student child = childOptional.get(); // Get the student if found
+                        Student child = childOptional.get(); 
                         parent.setStudents(new HashSet<>(Set.of(child)));
                     } else {
-                        // Optional: Handle case where child email doesn't exist?
-                        // For now, we just won't link any students.
+                       
                         System.err.println("Warning: Child email not found during parent registration: " + childEmail);
                     }
                 }
@@ -89,7 +88,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void createAdminStudent(Student student, String password) {
         User user = new User();
-        user.setEmail(student.getEmail()); // Use getEmail() helper
+        user.setEmail(student.getEmail()); 
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
         Role studentRole = roleRepository.findByName("ROLE_STUDENT");
@@ -103,7 +102,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void createTutorUser(Tutor tutor, String password) {
         User user = new User();
-        user.setEmail(tutor.getEmail()); // Use getEmail() helper
+        user.setEmail(tutor.getEmail()); 
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
         Role tutorRole = roleRepository.findByName("ROLE_TUTOR");
@@ -117,7 +116,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void createParentUser(Parent parent, String password, List<Long> studentIds) {
         User user = new User();
-        user.setEmail(parent.getEmail()); // Use getEmail() helper
+        user.setEmail(parent.getEmail()); 
         user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
         Role parentRole = roleRepository.findByName("ROLE_PARENT");
