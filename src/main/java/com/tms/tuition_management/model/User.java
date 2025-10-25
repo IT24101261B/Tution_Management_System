@@ -37,7 +37,6 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    // --- Standard Getters and Setters ---
     public Long getId() {
         return id;
     }
