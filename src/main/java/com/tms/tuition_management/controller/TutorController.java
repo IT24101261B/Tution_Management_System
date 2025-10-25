@@ -1,14 +1,14 @@
 package com.tms.tuition_management.controller;
 
 import com.tms.tuition_management.model.Tutor;
-import com.tms.tuition_management.model.User; // Ensure User is imported
+import com.tms.tuition_management.model.User; 
 import com.tms.tuition_management.repository.UserRepository;
 import com.tms.tuition_management.service.TutorService;
 import com.tms.tuition_management.service.UserService;
-import jakarta.validation.Valid; // Add this import
+import jakarta.validation.Valid; 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult; // Add this import
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -37,8 +37,8 @@ public class TutorController {
     }
 
     @PostMapping("/tutors")
-    public String saveTutor(@Valid @ModelAttribute("tutor") Tutor tutor, // Add @Valid
-                            BindingResult bindingResult, // Add BindingResult
+    public String saveTutor(@Valid @ModelAttribute("tutor") Tutor tutor, 
+                            BindingResult bindingResult, 
                             @RequestParam String password, Model model) {
         if (tutor.getEmail() != null && userService.findByEmail(tutor.getEmail()) != null) {
             bindingResult.rejectValue("email", "email.exists", "An account with this email already exists.");
@@ -60,13 +60,12 @@ public class TutorController {
 
     @PostMapping("/tutors/{id}")
     public String updateTutor(@PathVariable Long id,
-                              @Valid @ModelAttribute("tutor") Tutor tutorDetails, // Add @Valid
-                              BindingResult bindingResult, // Add BindingResult
+                              @Valid @ModelAttribute("tutor") Tutor tutorDetails, 
+                              BindingResult bindingResult, 
                               Model model) {
 
         Tutor existingTutor = tutorService.getTutorById(id);
 
-        // Check if email is changed and if the new email already exists for another user
         if (existingTutor.getUser() != null && tutorDetails.getEmail() != null &&
                 !existingTutor.getUser().getEmail().equals(tutorDetails.getEmail())) {
             User userWithNewEmail = userService.findByEmail(tutorDetails.getEmail());
@@ -76,13 +75,13 @@ public class TutorController {
         }
 
         if (bindingResult.hasErrors()) {
-            tutorDetails.setId(id); // Keep the ID
-            if(tutorDetails.getUser() == null) tutorDetails.setUser(existingTutor.getUser()); // Repopulate User if needed
+            tutorDetails.setId(id); 
+            if(tutorDetails.getUser() == null) tutorDetails.setUser(existingTutor.getUser()); 
             model.addAttribute("tutor", tutorDetails);
             return "edit_tutor";
         }
 
-        // Update logic
+       
         existingTutor.setName(tutorDetails.getName());
         existingTutor.setSubject(tutorDetails.getSubject());
         if (existingTutor.getUser() != null && tutorDetails.getEmail() != null) {
